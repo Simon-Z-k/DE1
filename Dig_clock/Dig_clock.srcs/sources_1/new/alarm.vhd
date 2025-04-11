@@ -41,7 +41,7 @@ entity alarm is
            current_h : in STD_LOGIC_VECTOR (4 downto 0);
            current_m : in STD_LOGIC_VECTOR (5 downto 0);
            current_s : in STD_LOGIC_VECTOR (5 downto 0);
-           alarm : out STD_LOGIC);
+           alarm_on : out STD_LOGIC := '0');
 end alarm;
 
 architecture Behavioral of alarm is
@@ -49,7 +49,7 @@ architecture Behavioral of alarm is
     signal alarm_h : std_logic_vector(4 downto 0) := (others => '0');
     signal alarm_m : std_logic_vector(5 downto 0) := (others => '0');
     signal alarm_s : std_logic_vector(5 downto 0) := (others => '0');
-
+    
 begin
 
     process(clk,rst)
@@ -69,11 +69,11 @@ begin
     
     process (current_h,current_m,current_s,alarm_h,alarm_m,alarm_s)
         begin
-            if (current_h = alarm_h AND current_m = alarm_m AND current_s = alarm_s) then
-                alarm <= '1';
+            if ((current_h = alarm_h AND current_m = alarm_m AND current_s = alarm_s) AND set = '1') then
+                alarm_on <= '1';
             else
-                alarm <= '0';
-            end if;
+                alarm_on <= '0';
+            end if;    
     end process;
     
 end Behavioral;

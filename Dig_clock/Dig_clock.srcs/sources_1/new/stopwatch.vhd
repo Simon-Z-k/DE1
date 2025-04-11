@@ -36,7 +36,7 @@ entity stopwatch is
            rst : in STD_LOGIC;
            pulse_1hz : in STD_LOGIC;
            start_stop : in STD_LOGIC;
-           zero : in STD_LOGIC; -- mozna vymyslet lepsi nazev
+           zero : in STD_LOGIC; -- mozna vymyslet lepsi nazev : nulovani
            hours : out STD_LOGIC_VECTOR (4 downto 0);
            minutes : out STD_LOGIC_VECTOR (5 downto 0);
            seconds : out STD_LOGIC_VECTOR (5 downto 0));
@@ -47,11 +47,11 @@ architecture Behavioral of stopwatch is
     signal h : integer range 0 to 23 := 0;
     signal m : integer range 0 to 59 := 0;
     signal s : integer range 0 to 59 := 0;
-    signal counting : std_logic := '0'; --proste to bezi
+    signal counting : std_logic := '0'; --pocitani
     signal button : std_logic := '0';
 
 begin
-    process (clk) --vyresni start-stop tlacitka
+    process (clk) --vyreseni start-stop tlacitka
         begin
             if rising_edge(clk) then
                 if start_stop = '1' and button ='0' then
@@ -85,7 +85,7 @@ begin
         end if;
     end process; 
     
-    hours <= std_logic_vector (TO_UNSIGNED (h, 5));
+    hours   <= std_logic_vector (TO_UNSIGNED (h, 5));
     minutes <= std_logic_vector (TO_UNSIGNED (m, 6));
     seconds <= std_logic_vector (TO_UNSIGNED (s, 6));
 
