@@ -73,7 +73,7 @@ begin
             when "0111" => seg <= "1111000"; -- 7
             when "1000" => seg <= "0000000"; -- 8
             when "1001" => seg <= "0010000"; -- 9
-            when others => seg <= "1111111"; -- blank
+            when others => seg <= "1111111"; -- segment je off
         end case;
     end process;
 
