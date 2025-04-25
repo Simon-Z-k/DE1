@@ -1,6 +1,58 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 04/04/2025 12:31:25 PM
+-- Design Name: 
+-- Module Name: top_level - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity top_level is
+    Port ( CLK100MHZ : in STD_LOGIC;
+           CA : out STD_LOGIC;
+           CB : out STD_LOGIC;
+           CC : out STD_LOGIC;
+           CD : out STD_LOGIC;
+           CE : out STD_LOGIC;
+           CF : out STD_LOGIC;
+           CG : out STD_LOGIC;
+           DP : out STD_LOGIC;
+           AN : out STD_LOGIC_VECTOR (7 downto 0);
+           SW : out STD_LOGIC_VECTOR (15 downto 0);
+           BTNC : in STD_LOGIC; --rst
+           BTNL : in STD_LOGIC; --start
+           BTNR : in STD_LOGIC; --reset pro stopwatch
+           BTND : in STD_LOGIC --set
+           );
+end top_level;
+
 architecture Behavioral of top_level is
 
-    -- Deklarace komponent
+    -- Komponenty
     component clock_enable
         generic (
             MAX : integer := 100000000
@@ -61,8 +113,8 @@ architecture Behavioral of top_level is
 
 begin
 
-    -- Instance clock_enable
-    clk_enable_inst : clock_enable
+    -- Instance
+    CLKEN : clock_enable
         generic map (
             MAX => 100000000
         )
@@ -73,7 +125,7 @@ begin
         );
 
     -- Instance dig_clk (hodiny)
-    dig_clk_inst : dig_clk
+    DGCLK : dig_clk
         port map (
             clk => CLK100MHZ,
             rst => BTNC,
@@ -84,7 +136,7 @@ begin
         );
 
     -- Instance alarmu
-    alarm_inst : alarm
+    ALM : alarm
         port map (
             clk => CLK100MHZ,
             rst => BTNC,
@@ -99,7 +151,7 @@ begin
         );
 
     -- Instance stopek
-    stopwatch_inst : stopwatch
+    STPWTCH : stopwatch
         port map (
             clk => CLK100MHZ,
             rst => BTNC,
