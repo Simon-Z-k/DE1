@@ -19,7 +19,7 @@ entity top_level is
            CE : out STD_LOGIC;
            CF : out STD_LOGIC;
            CG : out STD_LOGIC;
-           --DP : out STD_LOGIC;
+           DP : out STD_LOGIC;
            AN : out STD_LOGIC_VECTOR (7 downto 0);
            SW : in STD_LOGIC_VECTOR (15 downto 0);
            BTNC : in STD_LOGIC; --rst
@@ -106,7 +106,7 @@ architecture Behavioral of top_level is
     signal alarm_on : std_logic;
     
     --signal sec_units : std_logic_vector(3 downto 0);
-    signal seg_out : std_logic_vector(6 downto 0);
+    signal SEG_out : std_logic_vector(6 downto 0);
 
 
 begin
@@ -169,7 +169,7 @@ begin
             h_bin => disp_h,
             m_bin => disp_m, 
             s_bin => disp_s,      
-            seg => Seg_out,
+            SEG => SEG_out,
             an => AN
         );     
 
@@ -197,7 +197,7 @@ begin
     end process;       
                     
     -- Výstupy displeje (zatím statické)
-    --DP <= '1';
+    DP <= '1';
     --AN <= "01111111";
     
     --sec_units <= std_logic_vector(TO_UNSIGNED(TO_INTEGER(unsigned(disp_s)) mod 10, 4));
