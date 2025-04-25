@@ -19,13 +19,14 @@ entity top_level is
            CE : out STD_LOGIC;
            CF : out STD_LOGIC;
            CG : out STD_LOGIC;
-           DP : out STD_LOGIC;
+           --DP : out STD_LOGIC;
            AN : out STD_LOGIC_VECTOR (7 downto 0);
            SW : in STD_LOGIC_VECTOR (15 downto 0);
            BTNC : in STD_LOGIC; --rst
            BTNL : in STD_LOGIC; --start
            BTNR : in STD_LOGIC; --nulovani pro stopwatch
-           BTND : in STD_LOGIC --set
+           BTND : in STD_LOGIC; --set
+           LED16_R : out STD_LOGIC --alarm
            );
 end top_level;
 
@@ -137,14 +138,14 @@ begin
         port map (
             clk => CLK100MHZ,
             rst => BTNC,
-            set => alarm_set,
+            set => BTND,
             sw_h => sw_h,
             sw_m => sw_m,
             sw_s => sw_s,
             current_h => h_bin,
             current_m => m_bin,
             current_s => s_bin,
-            alarm_on => alarm_on
+            alarm_on => LED16_R
         );
 
     -- Instance stopek
@@ -153,8 +154,8 @@ begin
             clk => CLK100MHZ,
             rst => BTNC,
             pulse_1hz => sig_en_1s,
-            start_stop => '0', -- doplnit z tlačítka
-            zero => '0',       -- doplnit z tlačítka
+            start_stop => BTNL, 
+            zero => BTNR,       
             hours => sw_h_stop,
             minutes => sw_m_stop,
             seconds => sw_s_stop
