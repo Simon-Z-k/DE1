@@ -1,6 +1,14 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
 
 entity top_level is
     Port ( CLK100MHZ : in STD_LOGIC;
@@ -13,10 +21,10 @@ entity top_level is
            CG : out STD_LOGIC;
            DP : out STD_LOGIC;
            AN : out STD_LOGIC_VECTOR (7 downto 0);
-           SW : out STD_LOGIC_VECTOR (15 downto 0);
+           SW : in STD_LOGIC_VECTOR (15 downto 0);
            BTNC : in STD_LOGIC; --rst
            BTNL : in STD_LOGIC; --start
-           BTNR : in STD_LOGIC; --reset pro stopwatch
+           BTNR : in STD_LOGIC; --nulovani pro stopwatch
            BTND : in STD_LOGIC --set
            );
 end top_level;
@@ -73,6 +81,20 @@ architecture Behavioral of top_level is
             seconds : out STD_LOGIC_VECTOR (5 downto 0)
         );
     end component;
+    
+    
+    component seg7_driver
+        Port (
+            clk : in STD_LOGIC;
+            rst : in STD_LOGIC;
+            SEG : out STD_LOGIC_VECTOR (6 downto 0);
+            AN : out STD_LOGIC_VECTOR (7 downto 0);
+            h_bin : in STD_LOGIC_VECTOR (4 downto 0);
+            m_bin : in STD_LOGIC_VECTOR (5 downto 0);
+            s_bin : in STD_LOGIC_VECTOR (5 downto 0)
+        );
+    end component;
+    
 
     -- Signály pro propojení
     signal sig_en_1s : std_logic;
@@ -81,6 +103,10 @@ architecture Behavioral of top_level is
     signal s_bin, sw_s, sw_s_stop, disp_s : std_logic_vector(5 downto 0);
     signal alarm_set : std_logic := '0';
     signal alarm_on : std_logic;
+    
+    --signal sec_units : std_logic_vector(3 downto 0);
+    signal seg_out : std_logic_vector(6 downto 0);
+
 
 begin
 
@@ -133,6 +159,18 @@ begin
             minutes => sw_m_stop,
             seconds => sw_s_stop
         );
+        
+    
+    DISP : seg7_driver
+        port map (
+            clk => CLK100MHZ,
+            rst => BTNC,
+            h_bin => disp_h,
+            m_bin => disp_m, 
+            s_bin => disp_s,      
+            seg => Seg_out,
+            an => AN
+        );     
 
     
     process(SW, h_bin, sw_h, sw_h_stop, m_bin, sw_m, sw_m_stop, s_bin, sw_s, sw_s_stop)
@@ -155,10 +193,21 @@ begin
                 disp_m <= (others => '0');
                 disp_s <= (others => '0');
         end case;
-    end process;     
-
+    end process;       
+                    
     -- Výstupy displeje (zatím statické)
-    DP <= '1';
-    AN <= "01111111";
+    --DP <= '1';
+    --AN <= "01111111";
+    
+    --sec_units <= std_logic_vector(TO_UNSIGNED(TO_INTEGER(unsigned(disp_s)) mod 10, 4));
+    --seg_out <= decode_digit(sec_units);
+    
+    CA <= seg_out(6);
+    CB <= seg_out(5);
+    CC <= seg_out(4);
+    CD <= seg_out(3);
+    CE <= seg_out(2);
+    CF <= seg_out(1);
+    CG <= seg_out(0);
 
 end Behavioral;
