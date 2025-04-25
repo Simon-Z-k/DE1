@@ -1,35 +1,6 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 04/04/2025 12:31:25 PM
--- Design Name: 
--- Module Name: top_level - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity top_level is
     Port ( CLK100MHZ : in STD_LOGIC;
@@ -105,9 +76,9 @@ architecture Behavioral of top_level is
 
     -- Signály pro propojení
     signal sig_en_1s : std_logic;
-    signal h_bin, sw_h, sw_h_stop : std_logic_vector(4 downto 0);
-    signal m_bin, sw_m, sw_m_stop : std_logic_vector(5 downto 0);
-    signal s_bin, sw_s, sw_s_stop : std_logic_vector(5 downto 0);
+    signal h_bin, sw_h, sw_h_stop, disp_h : std_logic_vector(4 downto 0);
+    signal m_bin, sw_m, sw_m_stop, disp_m : std_logic_vector(5 downto 0);
+    signal s_bin, sw_s, sw_s_stop, disp_s : std_logic_vector(5 downto 0);
     signal alarm_set : std_logic := '0';
     signal alarm_on : std_logic;
 
@@ -162,6 +133,29 @@ begin
             minutes => sw_m_stop,
             seconds => sw_s_stop
         );
+
+    
+    process(SW, h_bin, sw_h, sw_h_stop, m_bin, sw_m, sw_m_stop, s_bin, sw_s, sw_s_stop)
+    begin
+        case SW (15 downto 14) is
+            when "00" => 
+                disp_h <= h_bin;
+                disp_m <= m_bin;
+                disp_s <= s_bin;
+            when "01" => 
+                disp_h <= sw_h;
+                disp_m <= sw_m;
+                disp_s <= sw_s;
+            when "10" => 
+                disp_h <= sw_h_stop;
+                disp_m <= sw_m_stop;
+                disp_s <= sw_s_stop;
+            when others =>
+                disp_h <= (others => '0');
+                disp_m <= (others => '0');
+                disp_s <= (others => '0');
+        end case;
+    end process;     
 
     -- Výstupy displeje (zatím statické)
     DP <= '1';
