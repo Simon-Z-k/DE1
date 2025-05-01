@@ -170,7 +170,7 @@ begin
             m_bin => disp_m, 
             s_bin => disp_s,      
             SEG => SEG_out,
-            an => AN
+            AN => AN
         );     
 
     
