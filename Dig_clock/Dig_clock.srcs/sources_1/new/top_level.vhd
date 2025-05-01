@@ -203,12 +203,12 @@ begin
     --sec_units <= std_logic_vector(TO_UNSIGNED(TO_INTEGER(unsigned(disp_s)) mod 10, 4));
     --seg_out <= decode_digit(sec_units);
     
-    CA <= seg_out(6);
-    CB <= seg_out(5);
-    CC <= seg_out(4);
-    CD <= seg_out(3);
-    CE <= seg_out(2);
-    CF <= seg_out(1);
-    CG <= seg_out(0);
+    CA <= SEG_out(6);
+    CB <= SEG_out(5);
+    CC <= SEG_out(4);
+    CD <= SEG_out(3);
+    CE <= SEG_out(2);
+    CF <= SEG_out(1);
+    CG <= SEG_out(0);
 
 end Behavioral;
