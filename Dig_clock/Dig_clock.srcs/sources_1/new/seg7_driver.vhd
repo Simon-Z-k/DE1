@@ -9,8 +9,8 @@ entity seg7_driver is
         h_bin : in STD_LOGIC_VECTOR (4 downto 0);
         m_bin : in STD_LOGIC_VECTOR (5 downto 0);
         s_bin : in STD_LOGIC_VECTOR (5 downto 0);
-        seg : out STD_LOGIC_VECTOR (6 downto 0);
-        an : out STD_LOGIC_VECTOR (7 downto 0)
+        SEG : out STD_LOGIC_VECTOR (6 downto 0);
+        AN : out STD_LOGIC_VECTOR (7 downto 0)
     );
 end seg7_driver;
 
@@ -37,25 +37,25 @@ begin
         case mux_counter is
             when "000" => -- sekundy jednotky
                 digit_values <= std_logic_vector(to_unsigned(to_integer(unsigned(s_bin)) mod 10, 4));
-                an <= "11111110";
+                AN <= "11111110";
             when "001" => -- sekundy desítky
                 digit_values <= std_logic_vector(to_unsigned(to_integer(unsigned(s_bin)) / 10, 4));
-                an <= "11111101";
+                AN <= "11111101";
             when "010" => -- minuty jednotky
                 digit_values <= std_logic_vector(to_unsigned(to_integer(unsigned(m_bin)) mod 10, 4));
-                an <= "11111011";
+                AN <= "11111011";
             when "011" => -- minuty desítky
                 digit_values <= std_logic_vector(to_unsigned(to_integer(unsigned(m_bin)) / 10, 4));
-                an <= "11110111";
+                AN <= "11110111";
             when "100" => -- hodiny jednotky
                 digit_values <= std_logic_vector(to_unsigned(to_integer(unsigned(h_bin)) mod 10, 4));
-                an <= "11101111";
+                AN <= "11101111";
             when "101" => -- hodiny desítky
                 digit_values <= std_logic_vector(to_unsigned(to_integer(unsigned(h_bin)) / 10, 4));
-                an <= "11011111";
+                AN <= "11011111";
             when others =>
                 digit_values <= "0000";
-                an <= "11111111";
+                AN <= "11111111";
         end case;
     end process;
 
@@ -63,17 +63,17 @@ begin
     process(digit_values)
     begin
         case digit_values is
-            when "0000" => seg <= "1000000"; -- 0
-            when "0001" => seg <= "1111001"; -- 1
-            when "0010" => seg <= "0100100"; -- 2
-            when "0011" => seg <= "0110000"; -- 3
-            when "0100" => seg <= "0011001"; -- 4
-            when "0101" => seg <= "0010010"; -- 5
-            when "0110" => seg <= "0000010"; -- 6
-            when "0111" => seg <= "1111000"; -- 7
-            when "1000" => seg <= "0000000"; -- 8
-            when "1001" => seg <= "0010000"; -- 9
-            when others => seg <= "1111111"; -- segment je off
+            when "0000" => SEG <= "1000000"; -- 0
+            when "0001" => SEG <= "1111001"; -- 1
+            when "0010" => SEG <= "0100100"; -- 2
+            when "0011" => SEG <= "0110000"; -- 3
+            when "0100" => SEG <= "0011001"; -- 4
+            when "0101" => SEG <= "0010010"; -- 5
+            when "0110" => SEG <= "0000010"; -- 6
+            when "0111" => SEG <= "1111000"; -- 7
+            when "1000" => SEG <= "0000000"; -- 8
+            when "1001" => SEG <= "0010000"; -- 9
+            when others => SEG <= "1111111"; -- segment je off
         end case;
     end process;
 
