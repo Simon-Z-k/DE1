@@ -55,8 +55,7 @@ begin
 
     -- ***EDIT*** Check that clk is really your main clock signal
     clk <= TbClock;
-
-    stimuli : process
+stimuli : process
 begin
     -- Počáteční reset a nulování
     rst <= '1';
@@ -86,14 +85,29 @@ begin
 
     -- Zastavení
     stop <= '1';
-    wait for 100 ns;
+    wait for 50 ns;
+    stop <= '0'; -- připraveno na nové spuštění
 
-    -- Nulování
-    zero <= '1';
-    wait for 20 ns;
-    zero <= '0';
+    -- Druhé spuštění
+    start <= '1';
+    wait for 10 ns;
+    start <= '0';
+
+    -- Simulace dalších 3 sekund
+    for i in 1 to 3 loop
+        pulse_1hz <= '1';
+        wait for 10 ns;
+        pulse_1hz <= '0';
+        wait for 90 ns;
+    end loop;
+
+    -- Druhé zastavení
+    stop <= '1';
+    wait for 50 ns;
 
     -- Konec simulace
     TbSimEnded <= '1';
     wait;
 end process;
+
+    
