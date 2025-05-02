@@ -20,7 +20,7 @@ architecture Behavioral of seg7_driver is
     signal clkdiv : unsigned(15 downto 0) := (others => '0');
 begin
 
-    -- JednoduchÃ½ clock divider pro multiplexing
+    -- Jednoduchý clock divider pro multiplexing
     process(clk)
     begin
         if rising_edge(clk) then
@@ -31,26 +31,26 @@ begin
         end if;
     end process;
 
-    -- VÃ½bÄ›r sprÃ¡vnÃ© ÄÃ­slice
+    -- Výb?r správné ?íslice
     process(mux_counter, h_bin, m_bin, s_bin)
     begin
         case mux_counter is
             when "000" => -- sekundy jednotky
                 digit_values <= std_logic_vector(to_unsigned(to_integer(unsigned(s_bin)) mod 10, 4));
                 AN <= "11111110";
-            when "001" => -- sekundy desÃ­tky
+            when "001" => -- sekundy desítky
                 digit_values <= std_logic_vector(to_unsigned(to_integer(unsigned(s_bin)) / 10, 4));
                 AN <= "11111101";
             when "010" => -- minuty jednotky
                 digit_values <= std_logic_vector(to_unsigned(to_integer(unsigned(m_bin)) mod 10, 4));
                 AN <= "11111011";
-            when "011" => -- minuty desÃ­tky
+            when "011" => -- minuty desítky
                 digit_values <= std_logic_vector(to_unsigned(to_integer(unsigned(m_bin)) / 10, 4));
                 AN <= "11110111";
             when "100" => -- hodiny jednotky
                 digit_values <= std_logic_vector(to_unsigned(to_integer(unsigned(h_bin)) mod 10, 4));
                 AN <= "11101111";
-            when "101" => -- hodiny desÃ­tky
+            when "101" => -- hodiny desítky
                 digit_values <= std_logic_vector(to_unsigned(to_integer(unsigned(h_bin)) / 10, 4));
                 AN <= "11011111";
             when others =>
@@ -59,7 +59,7 @@ begin
         end case;
     end process;
 
-    -- PÅ™evod binÃ¡rnÃ­ hodnoty na 7-segmentovÃ½ kÃ³d (common anode)
+    -- P?evod binární hodnoty na 7-segmentový kód (common anode)
     process(digit_values)
     begin
         case digit_values is

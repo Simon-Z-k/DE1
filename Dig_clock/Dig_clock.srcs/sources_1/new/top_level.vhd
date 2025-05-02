@@ -1,3 +1,4 @@
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -19,13 +20,13 @@ entity top_level is
            CE : out STD_LOGIC;
            CF : out STD_LOGIC;
            CG : out STD_LOGIC;
-           DP : out STD_LOGIC;
            AN : out STD_LOGIC_VECTOR (7 downto 0);
            SW : in STD_LOGIC_VECTOR (15 downto 0);
            BTNC : in STD_LOGIC; --rst
            BTNL : in STD_LOGIC; --start
            BTNR : in STD_LOGIC; --nulovani pro stopwatch
            BTND : in STD_LOGIC; --set
+           BTNU : in STD_LOGIC; --navysovani casu
            LED16_R : out STD_LOGIC --alarm
            );
 end top_level;
@@ -48,7 +49,10 @@ architecture Behavioral of top_level is
         Port (
             clk : in STD_LOGIC;
             rst : in STD_LOGIC;
-            pulse_1hz : in STD_LOGIC; 
+            pulse_1hz : in STD_LOGIC;
+            set : in STD_LOGIC;         
+            new_h : in STD_LOGIC_VECTOR (4 downto 0);
+            new_m : in STD_LOGIC_VECTOR (5 downto 0);
             hours : out STD_LOGIC_VECTOR (4 downto 0);
             minutes : out STD_LOGIC_VECTOR (5 downto 0);
             seconds : out STD_LOGIC_VECTOR (5 downto 0)
@@ -75,7 +79,8 @@ architecture Behavioral of top_level is
             clk : in STD_LOGIC;
             rst : in STD_LOGIC;
             pulse_1hz : in STD_LOGIC;
-            start_stop : in STD_LOGIC;
+            start : in STD_LOGIC;
+            stop : in STD_LOGIC;
             zero : in STD_LOGIC;
             hours : out STD_LOGIC_VECTOR (4 downto 0);
             minutes : out STD_LOGIC_VECTOR (5 downto 0);
@@ -97,16 +102,17 @@ architecture Behavioral of top_level is
     end component;
     
 
-    -- SignÃ¡ly pro propojenÃ­
+    -- Signály pro propojení
     signal sig_en_1s : std_logic;
-    signal h_bin, sw_h, sw_h_stop, disp_h : std_logic_vector(4 downto 0);
-    signal m_bin, sw_m, sw_m_stop, disp_m : std_logic_vector(5 downto 0);
+    signal h_bin, sw_h, sw_h_stop, disp_h, set_h : std_logic_vector(4 downto 0);
+    signal m_bin, sw_m, sw_m_stop, disp_m, set_m : std_logic_vector(5 downto 0);
     signal s_bin, sw_s, sw_s_stop, disp_s : std_logic_vector(5 downto 0);
     signal alarm_set : std_logic := '0';
     signal alarm_on : std_logic;
     
-    --signal sec_units : std_logic_vector(3 downto 0);
-    signal SEG_out : std_logic_vector(6 downto 0);
+    signal SEG : std_logic_vector(6 downto 0);
+     
+    signal inc_btn_prev : std_logic := '0';
 
 
 begin
@@ -128,6 +134,9 @@ begin
             clk => CLK100MHZ,
             rst => BTNC,
             pulse_1hz => sig_en_1s,
+            set => BTND,
+            new_h => set_h,
+            new_m => set_m,
             hours => h_bin,
             minutes => m_bin,
             seconds => s_bin
@@ -154,8 +163,9 @@ begin
             clk => CLK100MHZ,
             rst => BTNC,
             pulse_1hz => sig_en_1s,
-            start_stop => BTNL, 
-            zero => BTNR,       
+            start => BTNL,
+            stop => BTNR,
+            zero => BTND,       
             hours => sw_h_stop,
             minutes => sw_m_stop,
             seconds => sw_s_stop
@@ -169,9 +179,35 @@ begin
             h_bin => disp_h,
             m_bin => disp_m, 
             s_bin => disp_s,      
-            SEG => SEG_out,
+            SEG => SEG,
             AN => AN
         );     
+
+
+    process(CLK100MHZ)
+begin
+    if rising_edge(CLK100MHZ) then
+        -- Detekce náb?né hrany tla?ítka BTNU
+        if (inc_btn_prev = '0') and (BTNU = '1') then
+            case SW(1 downto 0) is
+                when "10" =>  -- hodiny
+                    if unsigned(set_h) = 23 then
+                        set_h <= (others => '0');
+                    else
+                        set_h <= std_logic_vector(unsigned(set_h) + 1);
+                    end if;
+                    when "11" =>  -- minuty
+                    if unsigned(set_m) = 59 then
+                        set_m <= (others => '0');
+                    else
+                        set_m <= std_logic_vector(unsigned(set_m) + 1);
+                    end if;
+                when others => null;
+            end case;
+        end if;
+        inc_btn_prev <= BTNU;
+    end if;
+end process;
 
     
     process(SW, h_bin, sw_h, sw_h_stop, m_bin, sw_m, sw_m_stop, s_bin, sw_s, sw_s_stop)
@@ -196,19 +232,14 @@ begin
         end case;
     end process;       
                     
-    -- VÃ½stupy displeje (zatÃ­m statickÃ©)
-    DP <= '1';
-    --AN <= "01111111";
+    -- Vıstupy displeje 
     
-    --sec_units <= std_logic_vector(TO_UNSIGNED(TO_INTEGER(unsigned(disp_s)) mod 10, 4));
-    --seg_out <= decode_digit(sec_units);
-    
-    CA <= SEG_out(6);
-    CB <= SEG_out(5);
-    CC <= SEG_out(4);
-    CD <= SEG_out(3);
-    CE <= SEG_out(2);
-    CF <= SEG_out(1);
-    CG <= SEG_out(0);
+    CA <= SEG(0);
+    CB <= SEG(1);
+    CC <= SEG(2);
+    CD <= SEG(3);
+    CE <= SEG(4);
+    CF <= SEG(5);
+    CG <= SEG(6);
 
 end Behavioral;

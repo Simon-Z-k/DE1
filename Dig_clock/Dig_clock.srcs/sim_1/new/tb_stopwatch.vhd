@@ -55,9 +55,10 @@ begin
 
     -- ***EDIT*** Check that clk is really your main clock signal
     clk <= TbClock;
-stimuli : process
+
+    stimuli : process
 begin
-    -- PoÄÃ¡teÄnÃ­ reset a nulovÃ¡nÃ­
+    -- Po?áte?ní reset a nulování
     rst <= '1';
     pulse_1hz <= '0';
     start <= '0';
@@ -69,7 +70,7 @@ begin
     zero <= '0';
     stop <= '0';
 
-    -- SpuÅ¡tÄ›nÃ­ stopek
+    -- Spušt?ní stopek
     wait for 20 ns;
     start <= '1';
     wait for 10 ns;
@@ -83,17 +84,17 @@ begin
         wait for 90 ns;
     end loop;
 
-    -- ZastavenÃ­
+    -- Zastavení
     stop <= '1';
     wait for 50 ns;
-    stop <= '0'; -- pÅ™ipraveno na novÃ© spuÅ¡tÄ›nÃ­
+    stop <= '0'; -- p?ipraveno na nové spušt?ní
 
-    -- DruhÃ© spuÅ¡tÄ›nÃ­
+    -- Druhé spušt?ní
     start <= '1';
     wait for 10 ns;
     start <= '0';
 
-    -- Simulace dalÅ¡Ã­ch 3 sekund
+    -- Simulace dalších 3 sekund
     for i in 1 to 3 loop
         pulse_1hz <= '1';
         wait for 10 ns;
@@ -101,7 +102,7 @@ begin
         wait for 90 ns;
     end loop;
 
-    -- DruhÃ© zastavenÃ­
+    -- Druhé zastavení
     stop <= '1';
     wait for 50 ns;
 
@@ -110,4 +111,9 @@ begin
     wait;
 end process;
 
-    
+end tb;
+
+configuration cfg_tb_stopwatch of tb_stopwatch is
+    for tb
+    end for;
+end cfg_tb_stopwatch;
