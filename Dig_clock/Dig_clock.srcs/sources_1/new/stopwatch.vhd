@@ -1,24 +1,3 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 04/04/2025 12:19:17 PM
--- Design Name: 
--- Module Name: stopwatch - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -35,7 +14,8 @@ entity stopwatch is
     Port ( clk : in STD_LOGIC;
            rst : in STD_LOGIC;
            pulse_1hz : in STD_LOGIC;
-           start_stop : in STD_LOGIC;
+           start : in STD_LOGIC;
+           stop : in STD_LOGIC;
            zero : in STD_LOGIC; -- mozna vymyslet lepsi nazev : nulovani
            hours : out STD_LOGIC_VECTOR (4 downto 0);
            minutes : out STD_LOGIC_VECTOR (5 downto 0);
@@ -44,31 +24,32 @@ end stopwatch;
 
 architecture Behavioral of stopwatch is
 
-    signal h : integer range 0 to 23 := 0;
-    signal m : integer range 0 to 59 := 0;
-    signal s : integer range 0 to 59 := 0;
-    signal counting : std_logic := '0'; --pocitani
-    signal button : std_logic := '0';
+    signal h, m, s : integer := 0;
+    signal running : std_logic := '0'; --pocitani
 
 begin
     process (clk) --vyreseni start-stop tlacitka
         begin
             if rising_edge(clk) then
-                if start_stop = '1' and button ='0' then
-                    counting <= not counting;
+                if rst = '1' then
+                    running <= '0';
+                elsif start = '1' then   
+                    running <= '1';
+                elsif stop = '1' then   
+                    running <= '0';
                 end if;
-                button <= start_stop;
             end if;
+            
     end process;          
     
-    process (clk,rst)
+    process (clk)
         begin
+            if rising_edge(clk) then
             if rst = '1' or zero = '1' then
                 h <= 0;
                 m <= 0;
                 s <= 0;
-            elsif rising_edge(clk) then
-                if pulse_1hz = '1' and counting = '1' then
+            elsif pulse_1hz = '1' and running = '1' then
                     if s <= 59 then
                         s <= 0;
                         if m <= 59 then
