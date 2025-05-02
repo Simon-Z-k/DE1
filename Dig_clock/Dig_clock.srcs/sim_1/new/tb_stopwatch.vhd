@@ -57,52 +57,43 @@ begin
     clk <= TbClock;
 
     stimuli : process
-    begin
-        -- ***EDIT*** Adapt initialization as needed
-        rst <= '1';
-        pulse_1hz <= '0';
-        start <= '0';
-        stop <= '1';
-        zero <= '1';
-        wait for 10 ns;
-        -- Reset generation
-        -- ***EDIT*** Check that rst is really your reset signal
-        zero <= '0';
-        rst <= '0';
-        
-        wait for 10 ns;
-        
+begin
+    -- Počáteční reset a nulování
+    rst <= '1';
+    pulse_1hz <= '0';
+    start <= '0';
+    stop <= '1';
+    zero <= '1';
+    wait for 20 ns;
+
+    rst <= '0';
+    zero <= '0';
+    stop <= '0';
+
+    -- Spuštění stopek
+    wait for 20 ns;
+    start <= '1';
+    wait for 10 ns;
+    start <= '0';
+
+    -- Simulace 5 sekund stopek
+    for i in 1 to 5 loop
         pulse_1hz <= '1';
         wait for 10 ns;
-        stop <= '0';
-        wait for 10 ns;
-        start <= '1';
-        wait for 10 ns;
-        start <= '0';
-        wait for 5 ns;
-        
         pulse_1hz <= '0';
-        wait for 10 ns;
-        pulse_1hz <= '1';
-        wait for 10 ns;
-        
-        stop <= '1';
-        wait for 100 ns;
-        zero <= '1';
-        
-        -- ***EDIT*** Add stimuli here
-        wait for 100 * TbPeriod;
+        wait for 90 ns;
+    end loop;
 
-        -- Stop the clock and hence terminate the simulation
-        TbSimEnded <= '1';
-        wait;
-    end process;
+    -- Zastavení
+    stop <= '1';
+    wait for 100 ns;
 
-end tb;
+    -- Nulování
+    zero <= '1';
+    wait for 20 ns;
+    zero <= '0';
 
--- Configuration block below is required by some simulators. Usually no need to edit.
-
-configuration cfg_tb_stopwatch of tb_stopwatch is
-    for tb
-    end for;
-end cfg_tb_stopwatch;
+    -- Konec simulace
+    TbSimEnded <= '1';
+    wait;
+end process;
