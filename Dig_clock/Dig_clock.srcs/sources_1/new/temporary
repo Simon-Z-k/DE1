@@ -1,17 +1,65 @@
-entity dig_clk is
-    Port (
-        clk       : in STD_LOGIC;
-        rst       : in STD_LOGIC;
-        pulse_1hz : in STD_LOGIC;
-        set       : in STD_LOGIC;         -- spustí načtení nového času (např. BTND)
-        inc_h     : in STD_LOGIC;         -- tlačítko pro zvýšení hodin (např. BTNU)
-        inc_m     : in STD_LOGIC;         -- tlačítko pro zvýšení minut (např. BTNR)
-        inc_s     : in STD_LOGIC;         -- tlačítko pro zvýšení sekund (např. BTNL)
-        new_h     : in STD_LOGIC_VECTOR (4 downto 0);
-        new_m     : in STD_LOGIC_VECTOR (5 downto 0);
-        new_s     : in STD_LOGIC_VECTOR (5 downto 0);
-        hours     : out STD_LOGIC_VECTOR (4 downto 0);
-        minutes   : out STD_LOGIC_VECTOR (5 downto 0);
-        seconds   : out STD_LOGIC_VECTOR (5 downto 0)
-    );
-end dig_clk;
+architecture Behavioral of dig_clk is
+    signal h_reg : std_logic_vector(4 downto 0) := (others => '0');
+    signal m_reg : std_logic_vector(5 downto 0) := (others => '0');
+    signal s_reg : std_logic_vector(5 downto 0) := (others => '0');
+begin
+
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            if rst = '1' then
+                h_reg <= (others => '0');
+                m_reg <= (others => '0');
+                s_reg <= (others => '0');
+
+            elsif set = '1' then
+                h_reg <= new_h;
+                m_reg <= new_m;
+                s_reg <= new_s;
+
+            elsif inc_h = '1' then
+                if h_reg = "10111" then -- 23
+                    h_reg <= (others => '0');
+                else
+                    h_reg <= std_logic_vector(unsigned(h_reg) + 1);
+                end if;
+
+            elsif inc_m = '1' then
+                if m_reg = "111011" then -- 59
+                    m_reg <= (others => '0');
+                else
+                    m_reg <= std_logic_vector(unsigned(m_reg) + 1);
+                end if;
+
+            elsif inc_s = '1' then
+                if s_reg = "111011" then -- 59
+                    s_reg <= (others => '0');
+                else
+                    s_reg <= std_logic_vector(unsigned(s_reg) + 1);
+                end if;
+
+            elsif pulse_1hz = '1' then
+                if s_reg = "111011" then
+                    s_reg <= (others => '0');
+                    if m_reg = "111011" then
+                        m_reg <= (others => '0');
+                        if h_reg = "10111" then
+                            h_reg <= (others => '0');
+                        else
+                            h_reg <= std_logic_vector(unsigned(h_reg) + 1);
+                        end if;
+                    else
+                        m_reg <= std_logic_vector(unsigned(m_reg) + 1);
+                    end if;
+                else
+                    s_reg <= std_logic_vector(unsigned(s_reg) + 1);
+                end if;
+            end if;
+        end if;
+    end process;
+
+    hours   <= h_reg;
+    minutes <= m_reg;
+    seconds <= s_reg;
+
+end Behavioral;
