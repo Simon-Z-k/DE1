@@ -15,7 +15,8 @@ architecture tb of tb_stopwatch is
         port (clk        : in std_logic;
               rst        : in std_logic;
               pulse_1hz  : in std_logic;
-              start_stop : in std_logic;
+              start      : in std_logic;
+              stop       : in std_logic;
               zero       : in std_logic;
               hours      : out std_logic_vector (4 downto 0);
               minutes    : out std_logic_vector (5 downto 0);
@@ -25,7 +26,8 @@ architecture tb of tb_stopwatch is
     signal clk        : std_logic;
     signal rst        : std_logic;
     signal pulse_1hz  : std_logic;
-    signal start_stop : std_logic;
+    signal start      : std_logic;
+    signal stop       : std_logic;
     signal zero       : std_logic;
     signal hours      : std_logic_vector (4 downto 0);
     signal minutes    : std_logic_vector (5 downto 0);
@@ -41,7 +43,8 @@ begin
     port map (clk        => clk,
               rst        => rst,
               pulse_1hz  => pulse_1hz,
-              start_stop => start_stop,
+              start      => start,
+              stop       => stop,
               zero       => zero,
               hours      => hours,
               minutes    => minutes,
@@ -58,7 +61,8 @@ begin
         -- ***EDIT*** Adapt initialization as needed
         rst <= '1';
         pulse_1hz <= '0';
-        start_stop <= '0';
+        start <= '0';
+        stop <= '1';
         zero <= '1';
         wait for 10 ns;
         -- Reset generation
@@ -70,9 +74,11 @@ begin
         
         pulse_1hz <= '1';
         wait for 10 ns;
-        start_stop <= '1';
+        stop <= '0';
         wait for 10 ns;
-        start_stop <= '0';
+        start <= '1';
+        wait for 10 ns;
+        start <= '0';
         wait for 5 ns;
         
         pulse_1hz <= '0';
@@ -80,7 +86,7 @@ begin
         pulse_1hz <= '1';
         wait for 10 ns;
         
-        start_stop <= '0';
+        stop <= '1';
         wait for 100 ns;
         zero <= '1';
         
