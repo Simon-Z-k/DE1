@@ -1,65 +1,29 @@
-architecture Behavioral of dig_clk is
-    signal h_reg : std_logic_vector(4 downto 0) := (others => '0');
-    signal m_reg : std_logic_vector(5 downto 0) := (others => '0');
-    signal s_reg : std_logic_vector(5 downto 0) := (others => '0');
+process(CLK100MHZ)
 begin
-
-    process(clk)
-    begin
-        if rising_edge(clk) then
-            if rst = '1' then
-                h_reg <= (others => '0');
-                m_reg <= (others => '0');
-                s_reg <= (others => '0');
-
-            elsif set = '1' then
-                h_reg <= new_h;
-                m_reg <= new_m;
-                s_reg <= new_s;
-
-            elsif inc_h = '1' then
-                if h_reg = "10111" then -- 23
-                    h_reg <= (others => '0');
-                else
-                    h_reg <= std_logic_vector(unsigned(h_reg) + 1);
-                end if;
-
-            elsif inc_m = '1' then
-                if m_reg = "111011" then -- 59
-                    m_reg <= (others => '0');
-                else
-                    m_reg <= std_logic_vector(unsigned(m_reg) + 1);
-                end if;
-
-            elsif inc_s = '1' then
-                if s_reg = "111011" then -- 59
-                    s_reg <= (others => '0');
-                else
-                    s_reg <= std_logic_vector(unsigned(s_reg) + 1);
-                end if;
-
-            elsif pulse_1hz = '1' then
-                if s_reg = "111011" then
-                    s_reg <= (others => '0');
-                    if m_reg = "111011" then
-                        m_reg <= (others => '0');
-                        if h_reg = "10111" then
-                            h_reg <= (others => '0');
-                        else
-                            h_reg <= std_logic_vector(unsigned(h_reg) + 1);
-                        end if;
+    if rising_edge(CLK100MHZ) then
+        if inc_btn_prev = '0' and BTNU = '1' then
+            case SW(1 downto 0) is
+                when "00" =>
+                    if set_h < "11000" then
+                        set_h <= std_logic_vector(unsigned(set_h) + 1);
                     else
-                        m_reg <= std_logic_vector(unsigned(m_reg) + 1);
+                        set_h <= (others => '0');
                     end if;
-                else
-                    s_reg <= std_logic_vector(unsigned(s_reg) + 1);
-                end if;
-            end if;
+                when "01" =>
+                    if set_m < "111100" then
+                        set_m <= std_logic_vector(unsigned(set_m) + 1);
+                    else
+                        set_m <= (others => '0');
+                    end if;
+                when "10" =>
+                    if set_s < "111100" then
+                        set_s <= std_logic_vector(unsigned(set_s) + 1);
+                    else
+                        set_s <= (others => '0');
+                    end if;
+                when others => null;
+            end case;
         end if;
-    end process;
-
-    hours   <= h_reg;
-    minutes <= m_reg;
-    seconds <= s_reg;
-
-end Behavioral;
+        inc_btn_prev <= BTNU;
+    end if;
+end process;
