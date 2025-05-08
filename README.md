@@ -2,7 +2,7 @@
 ## Členové týmu:
 Veronika Válková (implementace hlavních procesů)
 
-Šimon Zvončák (simulace, testování a správa displeje)
+Šimon Zvončák (simulace, testování a readme)
 
 ## Úvod:
 Projekt implementuje funkční digitální hodiny na vývojové desce Nexys A7 pomocí jazyka VHDL. Cílem bylo vytvořit systém, který zobrazuje čas v hodinách, minutách a sekundách na 7segmentovém displeji s možností nastavování času pomocí tlačítek.
