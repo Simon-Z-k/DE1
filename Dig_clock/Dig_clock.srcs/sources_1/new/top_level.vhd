@@ -1,15 +1,6 @@
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity top_level is
     Port ( CLK100MHZ : in STD_LOGIC;
@@ -23,17 +14,18 @@ entity top_level is
            AN : out STD_LOGIC_VECTOR (7 downto 0);
            SW : in STD_LOGIC_VECTOR (15 downto 0);
            BTNC : in STD_LOGIC; --rst
-           BTNL : in STD_LOGIC; --start
-           BTNR : in STD_LOGIC; --nulovani pro stopwatch
-           BTND : in STD_LOGIC; --set
+           BTNL : in STD_LOGIC; --start (pro stopky)
+           BTNR : in STD_LOGIC; --nulovani (pro stopky)
+           BTND : in STD_LOGIC; --set (potvzení inkrementace)
            BTNU : in STD_LOGIC; --navysovani casu
-           LED16_R : out STD_LOGIC --alarm
+           LED16_R : out STD_LOGIC --kontrolka alarmu
            );
 end top_level;
 
 architecture Behavioral of top_level is
 
     -- Komponenty
+    -- generace 1 Hz pulsu z 100 MHz
     component clock_enable
         generic (
             MAX : integer := 100000000
@@ -45,6 +37,7 @@ architecture Behavioral of top_level is
         );
     end component;
 
+    -- hlavní hodiny, udrzují cas
     component dig_clk
         Port (
             clk : in STD_LOGIC;
@@ -59,6 +52,7 @@ architecture Behavioral of top_level is
         );
     end component;
 
+    --kontrola, zda aktuální cas odpovídá nastavenému alarmu
     component alarm
         Port (
             clk : in STD_LOGIC;
@@ -74,6 +68,7 @@ architecture Behavioral of top_level is
         );
     end component;
 
+    --implementace stopek
     component stopwatch
         Port (
             clk : in STD_LOGIC;
@@ -88,7 +83,7 @@ architecture Behavioral of top_level is
         );
     end component;
     
-    
+    -- prevod binárního casu na výstup pro 7segmentový displej
     component seg7_driver
         Port (
             clk : in STD_LOGIC;
@@ -102,17 +97,17 @@ architecture Behavioral of top_level is
     end component;
     
 
-    -- Sign�ly pro propojen�
-    signal sig_en_1s : std_logic;
-    signal h_bin, sw_h, sw_h_stop, disp_h, set_h : std_logic_vector(4 downto 0);
-    signal m_bin, sw_m, sw_m_stop, disp_m, set_m : std_logic_vector(5 downto 0);
+    -- Signály pro propojení
+    signal sig_en_1s : std_logic; --výstup z clk_en
+    signal h_bin, sw_h, sw_h_stop, disp_h, set_h : std_logic_vector(4 downto 0); --bin-výstupy hodin, sw-nastavení budík, sw_stop-výstupy stopek
+    signal m_bin, sw_m, sw_m_stop, disp_m, set_m : std_logic_vector(5 downto 0); --disp-aktuálne zobrazené hodnoty, set-nastavované hodnoty casu pri inkrementace
     signal s_bin, sw_s, sw_s_stop, disp_s : std_logic_vector(5 downto 0);
     signal alarm_set : std_logic := '0';
     signal alarm_on : std_logic;
     
-    signal SEG : std_logic_vector(6 downto 0);
+    signal SEG : std_logic_vector(6 downto 0); --výstupní segmenty A-G
      
-    signal inc_btn_prev : std_logic := '0';
+    signal inc_btn_prev : std_logic := '0'; --pomocný signál pri inkrementaci
 
 
 begin
@@ -185,9 +180,9 @@ begin
 
 
     process(CLK100MHZ)
-begin
+    begin
     if rising_edge(CLK100MHZ) then
-        -- Detekce n�b?�n� hrany tla?�tka BTNU
+        -- Detekce nábezné hrany tlacítka BTNU (pouze pri prechodu z 0 na 1)
         if (inc_btn_prev = '0') and (BTNU = '1') then
             case SW(1 downto 0) is
                 when "10" =>  -- hodiny
@@ -207,21 +202,21 @@ begin
         end if;
         inc_btn_prev <= BTNU;
     end if;
-end process;
+    end process;
 
-    
+    --mode select
     process(SW, h_bin, sw_h, sw_h_stop, m_bin, sw_m, sw_m_stop, s_bin, sw_s, sw_s_stop)
     begin
         case SW (15 downto 14) is
-            when "00" => 
+            when "00" => --zobrazí bezný cas
                 disp_h <= h_bin;
                 disp_m <= m_bin;
                 disp_s <= s_bin;
-            when "01" => 
+            when "01" => --nastavení alarmu
                 disp_h <= sw_h;
                 disp_m <= sw_m;
                 disp_s <= sw_s;
-            when "10" => 
+            when "10" => --zobrazí stopky
                 disp_h <= sw_h_stop;
                 disp_m <= sw_m_stop;
                 disp_s <= sw_s_stop;
@@ -231,9 +226,8 @@ end process;
                 disp_s <= (others => '0');
         end case;
     end process;       
-                    
-    -- V�stupy displeje 
-    
+
+    -- Výstupy displeje 
     CA <= SEG(0);
     CB <= SEG(1);
     CC <= SEG(2);
