@@ -1,11 +1,10 @@
 # DE1 - Digitální hodiny pomocí Nexys A7
-Členové týmu
+Členové týmu:
 
 Veronika Válková (implementace hlavních procesů)
-
 Šimon Zvončák (simulace, testování a správa displeje)
 
-Úvod
+Úvod:
 Tento projekt implementuje funkční digitální hodiny na vývojové desce Nexys A7 pomocí jazyka VHDL. Cílem bylo vytvořit systém, který zobrazuje čas v hodinách, minutách a sekundách na 7-segmentovém displeji s možností nastavování času pomocí tlačítek. Jádrem systému je několik modulů, které zahrnují generování hodinového pulzu, řízení multiplexního zobrazení, a nastavení času přes uživatelský vstup. Doplňkově byly vytvořeny i moduly pro stopky a alarm, které však nebyly kvůli problémům s integrací použity ve finální implementaci. Projekt byl rozdělen do několika komponent, které byly jednotlivě navrženy, otestovány a simulovány. Výsledná aplikace ukazuje plynulý běh času v reálném čase, přičemž podporuje změnu hodin a minut.
 
 Hlavní přínosy projektu:
