@@ -17,7 +17,7 @@ end clock_enable;
 
 architecture Behavioral of clock_enable is
 
-    -- Čítač, který se inkrementuje až do hodnoty MAX
+    -- Cítac, který se inkrementuje do hodnoty MAX
     signal sig_count : integer range 0 to MAX := 0;
 
     -- Interní signál - jeden hodinový impulz
@@ -25,24 +25,24 @@ architecture Behavioral of clock_enable is
 
 begin
 
-    -- Proces, který běží při každém náběžné hraně hlavního hodinového signálu (clk)
+    -- Proces, který bezí při kazdém nábezné hraně hlavního hodinového signálu (clk)
     p_clk_enable : process (clk) is
     begin
         if rst='1' then                  -- Pokud je aktivní reset
             sig_count <= 0;              
             pulse <= '0';                
-        elsif (rising_edge(clk)) then    -- Jinak při náběžné hraně hodin
+        elsif (rising_edge(clk)) then    -- Jinak pri nábezné hrane hodin
             if sig_count = MAX then      
-                sig_count <= 0;          -- Reset čítače
+                sig_count <= 0;          -- Reset cítace
                 pulse <= '1';            -- Vygenerujeme impulz – trvá jeden takt
             else
-                sig_count <= sig_count + 1; -- Inkrementujeme čítač
-                pulse <= '0';               -- Výstupní impulz zůstává neaktivní
+                sig_count <= sig_count + 1; -- Inkrementujeme cítac
+                pulse <= '0';               -- Výstupní impulz zustává neaktivní
             end if;
         end if;
     end process p_clk_enable;
 
-    -- Připojení vnitřního signálu na výstupní port – impulz trvá vždy jeden takt (10 ns při 100 MHz)
+    -- Pripojení vnitrního signálu na výstupní port – impulz trvá vzdy jeden takt (10 ns pri 100 MHz)
     pulse_1hz <= pulse;
 
 end Behavioral;
