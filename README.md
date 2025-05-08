@@ -1,6 +1,5 @@
 # DE1 - Digitální hodiny pomocí Nexys A7
 Členové týmu:
-
 Veronika Válková (implementace hlavních procesů)
 Šimon Zvončák (simulace, testování a správa displeje)
 
