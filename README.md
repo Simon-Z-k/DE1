@@ -26,22 +26,26 @@ Projekt byl rozdělen do několika komponent, které byly jednotlivě navrženy,
 
 # Popis zdrojových souborů
 ## clock_enable.vhd
-Modul slouží jako dělič frekvence, který z hlavního systémového hodinového signálu (100 MHz) generuje přesný 1Hz impulz. Využívá čítač, který po dosažení určité hodnoty vygeneruje logickou „1“ na jeden takt – výsledkem je signál enable_1hz, používaný pro sekvenční jednotky v projektu jako spouštěcí impulz každou sekundu.
+Modul slouží jako dělič frekvence, který z hlavního systémového hodinového signálu (100 MHz) generuje přesný 1Hz impulz. Využívá čítač, který po dosažení určité hodnoty vygeneruje logickou „1“ na jeden takt – výsledkem je signál __enable_1hz__, používaný pro sekvenční jednotky v projektu jako spouštěcí impulz každou sekundu.
 
 ## dig_clk.vhd
-Modul digitálních hodin, který přebírá sekundové impulzy ze clock_enable. Obsahuje čítače pro sekundy, minuty a hodiny. Počítání se děje jen pokud je aktivní signál run_time. Také je zde možnost resetu (rst) nebo manuálního nastavení hodin a minut pomocí vstupů set_min, set_hour a přepínačů sw.
+Modul digitálních hodin, který přebírá sekundové impulzy z clock_enable. Obsahuje čítače pro sekundy, minuty a hodiny. Počítání se děje při náběžné hraně __clk__. Také je zde možnost resetu (__rst__) nebo manuálního nastavení hodin a minut pomocí vstupů __new_m, new_h__ a tlačítka __set__.
 
-## alarm.vhd
-Modul budíku, který umožňuje nastavit čas buzení pomocí vstupů set_alarm_min a set_alarm_hour. Porovnává aktuální čas s nastaveným a aktivuje výstup alarm_on při shodě.
+## alarm.vhd (WIP)
+Modul budíku, který umožňuje nastavit čas na buzení pomocí vstupů __*sw__ a __current__. Porovnává aktuální čas s nastaveným a aktivuje výstup __alarm_on__ při shodě.
 
-## stopwatch.vhd
-Obsahuje čítače sekund, minut a hodin, které se spouští signálem start, zastavují stop a vynulují zero. Na rozdíl od dig_clk.vhd se tento modul používá pro měření časových intervalů (stopky) a nikoliv pro kontinuální čas.
+*Původně se měl budík nastavovat binární kombinací switchů. Při řešení __top_level__ strukturu pak z toho sešlo, ale názvy zůstaly.
+
+## stopwatch.vhd (WIP)
+Obsahuje čítače sekund, minut a hodin, které se spouští signálem __start__, zastavují __stop__(rst tlačítko) a vynulují __zero__. Na rozdíl od __dig_clk.vhd__ se tento modul používá pro měření časových intervalů a nikoliv pro kontinuální čas.
+
+(Fun fact: Původně jsme implementovali to, že start-stop proces bude jedno tlačítko. Naše ošetření toho, jestli další náběžná hrana bude start nebo stop ale vůbec nefungovalo, tak jsme od toho opustili.)
 
 ## seg7_driver.vhd
-Multiplexní ovladač 7segmentového displeje. Pomocí vnitřního čítače (clock divider) přepíná jednotlivé anody (AN) a zobrazuje správné číslice hodin, minut a sekund na základě vstupů h_bin, m_bin, s_bin. Používá kódování pro společnou anodu.
+Multiplexní ovladač 7segmentového displeje. Pomocí vnitřního čítače (clock divider) přepíná jednotlivé anody (__AN__) a zobrazuje správné číslice hodin, minut a sekund na základě vstupů __h_bin, m_bin, s_bin__. Používá kódování pro společnou anodu.
 
 ## top_level.vhd
-Vrcholová entita celého návrhu. Zajišťuje propojení všech podsystémů – generuje hodinový impulz, počítá čas, zobrazuje ho na 7segmentovém displeji, a navíc připojuje stopky (stopwatch.vhd) a budík (alarm.vhd), které sice nejsou funkčně propojené, ale jsou připravené pro budoucí rozšíření.
+Zajišťuje propojení všech podsystémů – generuje hodinový impulz, počítá čas, zobrazuje ho na 7segmentovém displeji, a navíc připojuje stopky (__stopwatch.vhd__) a budík (__alarm.vhd__), které sice nejsou funkčně propojené, ale jsou připravené pro budoucí rozšíření. 
 
 
 ## Popis hardwarové implementace
@@ -50,13 +54,25 @@ Vrcholová entita celého návrhu. Zajišťuje propojení všech podsystémů �
 
 Top-level návrh systému:
 
-Tlačítka na desce Nexys A7 slouží pro reset a nastavení času.
+Tlačítka na desce Nexys A7 slouží pro ovládání stopek, inkrementaci času a reset:
 
-DIP přepínače vybírají, zda nastavujeme hodiny nebo minuty.
+DIP přepínače vybírají mode, nebo vybírají hodiny či minuty pro inkrementaci:
 
-Ovládání zajišťuje FSM (jednoduchý řízení) – při stisknutí BTNU dojde k navýšení příslušné hodnoty.
+sw[15,14]: 
 
-7-segmentový displej je řízen multiplexně, každé číslo je zobrazeno postupně.
+"00" - normální hodiny
+
+"01" - alarm
+
+"10" - stopky
+
+sw[1,0]:
+
+"10" - inkrementace hodin
+
+"11" - inkrementace minut
+
+7segmentový displej je řízen multiplexně, každé číslo je zobrazeno postupně.
 
 (Schématický obrázek doplníte zde, např. v PDF/A3)
 
@@ -72,7 +88,7 @@ V jiném režimu: běžný běh hodin, řízený pulzem 1 Hz
 
 (Doplnit FSM/flowchart jako obrázek sem)
 
-## Simulace komponent
+## Demonstrace komponent
 ### clock_enable – simulace
 Simuluje generování 1 Hz pulzu z hlavního hodinového signálu.
 
@@ -83,19 +99,20 @@ Ukazuje inkrementaci času každou sekundu.
 Kontrola správného multiplexního zobrazení číslic.
 
 ## Reference
-Digilent Nexys A7 Reference Manual: https://digilent.com/reference/programmable-logic/nexys-a7/reference-manual
 
-VHDL Guide by Vhdlwhiz
+-Digilent Nexys A7 Reference Manual: https://digilent.com/reference/programmable-logic/nexys-a7/reference-manual
 
-Online generátory testbenchů: https://vhdl.lapinoo.net
+-VHDL Guide by Vhdlwhiz
 
-Počítačové cvičení 5 - counter
+-Online generátory testbenchů: https://vhdl.lapinoo.net
 
-Schéma: https://www.drawio.com/
+-Počítačové cvičení 5 - counter - https://github.com/tomas-fryza/vhdl-labs/tree/master/lab5-counter
 
-ChatGPT
+-Schéma: https://www.drawio.com/
 
-https://vhdlguru.blogspot.com/2022/04/digital-clock-with-ability-to-set-time.html
+-ChatGPT
+
+-https://vhdlguru.blogspot.com/2022/04/digital-clock-with-ability-to-set-time.html
 
 
 
