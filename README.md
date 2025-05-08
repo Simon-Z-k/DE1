@@ -72,9 +72,10 @@ __sw[1,0]:__
 
 7segmentový displej je řízen multiplexně, každé číslo je zobrazeno postupně.
 
-(Schématický obrázek doplníte zde, např. v PDF/A3)
-
 ## Popis softwarového chování
+Velmi hrubý náčrt schématu:
+
+![final](https://github.com/user-attachments/assets/d5a7756d-7215-4bec-b9f1-c3130a99065f)
 
 Ukázka __dig_clk__ kódu:
 
@@ -88,31 +89,16 @@ vybírání režimů:
 
 https://github.com/Simon-Z-k/DE1/blob/54196997aa7305548211da789c06215ad0468fcb/Dig_clock/Dig_clock.srcs/sources_1/new/top_level.vhd#L207
 
-
-Flow diagram pro nastavování času
-SW[1:0] = "01": nastavování minut
-
-SW[1:0] = "10": nastavování hodin
-
-Tlačítko BTNU: zvýšení hodnoty dané složky času
-
-V jiném režimu: běžný běh hodin, řízený pulzem 1 Hz
-
-(Doplnit FSM/flowchart jako obrázek sem)
-
 ## Demonstrace komponent
 ### clock_enable
 Generování 1 Hz pulzu z hlavního hodinového signálu:
 
 https://github.com/user-attachments/assets/760020b1-2dba-4d91-a01e-1b701b613dd6
 
-
 ### dig_clk a seg7_driver
-Ukazuje ruční inkrementaci času správné multiplexného zobrazení číslic:
-
+Ukázka ruční inkrementace času a správné multiplexného zobrazení číslic:
 
 https://github.com/user-attachments/assets/04fd1368-b4a0-4bbd-996c-902be9fbe8d6
-
 
 ## Reference
 
