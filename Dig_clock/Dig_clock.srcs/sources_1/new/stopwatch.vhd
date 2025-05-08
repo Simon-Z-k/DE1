@@ -16,7 +16,7 @@ entity stopwatch is
            pulse_1hz : in STD_LOGIC;
            start : in STD_LOGIC;
            stop : in STD_LOGIC;
-           zero : in STD_LOGIC; -- mozna vymyslet lepsi nazev : nulovani
+           zero : in STD_LOGIC; -- nulovani
            hours : out STD_LOGIC_VECTOR (4 downto 0);
            minutes : out STD_LOGIC_VECTOR (5 downto 0);
            seconds : out STD_LOGIC_VECTOR (5 downto 0));
