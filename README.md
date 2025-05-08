@@ -52,13 +52,11 @@ Zajišťuje propojení všech podsystémů – generuje hodinový impulz, počí
 
 ![dig](https://github.com/user-attachments/assets/99275c0d-4656-4c4e-a16c-0a627c42846e)
 
-Top-level návrh systému:
-
-Tlačítka na desce Nexys A7 slouží pro ovládání stopek, inkrementaci času a reset:
+Tlačítka na desce slouží pro ovládání stopek, inkrementaci času a reset:
 
 DIP přepínače vybírají mode, nebo vybírají hodiny či minuty pro inkrementaci:
 
-sw[15,14]: 
+__sw[15,14]:__ 
 
 "00" - normální hodiny
 
@@ -66,7 +64,7 @@ sw[15,14]:
 
 "10" - stopky
 
-sw[1,0]:
+__sw[1,0]:__
 
 "10" - inkrementace hodin
 
@@ -77,6 +75,20 @@ sw[1,0]:
 (Schématický obrázek doplníte zde, např. v PDF/A3)
 
 ## Popis softwarového chování
+
+Ukázka __dig_clk__ kódu:
+
+https://github.com/Simon-Z-k/DE1/blob/54196997aa7305548211da789c06215ad0468fcb/Dig_clock/Dig_clock.srcs/sources_1/new/dig_clk.vhd#L43
+
+Pokus o debounce a inkrementace času v top_levelu:
+
+https://github.com/Simon-Z-k/DE1/blob/54196997aa7305548211da789c06215ad0468fcb/Dig_clock/Dig_clock.srcs/sources_1/new/top_level.vhd#L186
+
+vybírání režimů:
+
+https://github.com/Simon-Z-k/DE1/blob/54196997aa7305548211da789c06215ad0468fcb/Dig_clock/Dig_clock.srcs/sources_1/new/top_level.vhd#L207
+
+
 Flow diagram pro nastavování času
 SW[1:0] = "01": nastavování minut
 
@@ -89,14 +101,18 @@ V jiném režimu: běžný běh hodin, řízený pulzem 1 Hz
 (Doplnit FSM/flowchart jako obrázek sem)
 
 ## Demonstrace komponent
-### clock_enable – simulace
-Simuluje generování 1 Hz pulzu z hlavního hodinového signálu.
+### clock_enable
+Generování 1 Hz pulzu z hlavního hodinového signálu:
 
-### dig_clk – simulace
-Ukazuje inkrementaci času každou sekundu.
+https://github.com/user-attachments/assets/760020b1-2dba-4d91-a01e-1b701b613dd6
 
-### seg7_driver – simulace
-Kontrola správného multiplexního zobrazení číslic.
+
+### dig_clk a seg7_driver
+Ukazuje ruční inkrementaci času správné multiplexného zobrazení číslic:
+
+
+https://github.com/user-attachments/assets/04fd1368-b4a0-4bbd-996c-902be9fbe8d6
+
 
 ## Reference
 
