@@ -16,7 +16,7 @@ entity top_level is
            BTNC : in STD_LOGIC; --rst
            BTNL : in STD_LOGIC; --start (pro stopky)
            BTNR : in STD_LOGIC; --nulovani (pro stopky)
-           BTND : in STD_LOGIC; --set (potvzení inkrementace)
+           BTND : in STD_LOGIC; --set (potvzení inkrementace, budíku)
            BTNU : in STD_LOGIC; --navysovani casu
            LED16_R : out STD_LOGIC --kontrolka alarmu
            );
