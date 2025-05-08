@@ -5,17 +5,21 @@ Veronika Válková (implementace hlavních procesů)
 Šimon Zvončák (simulace, testování a správa displeje)
 
 ## Úvod:
-Projekt implementuje funkční digitální hodiny na vývojové desce Nexys A7 pomocí jazyka VHDL. Cílem bylo vytvořit systém, který zobrazuje čas v hodinách, minutách a sekundách na 7-segmentovém displeji s možností nastavování času pomocí tlačítek. Jádrem systému je několik modulů, které zahrnují generování hodinového pulzu, řízení multiplexního zobrazení, a úpravy hodinového signálu. Doplňkově byly vytvořeny i moduly pro stopky a alarm, které však kvůli problémům s integrací nefungují správně. Projekt byl rozdělen do několika komponent, které byly jednotlivě navrženy, otestovány a simulovány. Výsledná aplikace ukazuje plynulý běh času v reálném čase, přičemž podporuje změnu hodin a minut.
+Projekt implementuje funkční digitální hodiny na vývojové desce Nexys A7 pomocí jazyka VHDL. Cílem bylo vytvořit systém, který zobrazuje čas v hodinách, minutách a sekundách na 7segmentovém displeji s možností nastavování času pomocí tlačítek.
+
+Jádrem systému je několik modulů, které zahrnují generování hodinového pulzu, řízení multiplexního zobrazení, a úpravy hodinového signálu. Doplňkově byly vytvořeny i moduly pro stopky a alarm, které však kvůli problémům s integrací nefungují správně. 
+
+Projekt byl rozdělen do několika komponent, které byly jednotlivě navrženy, otestovány a simulovány. Výsledná aplikace ukazuje plynulý běh času v reálném čase, přičemž podporuje změnu hodin a minut.
 
 ### Hlavní přínosy projektu:
 
-Generování sekundové signálu
+-Generování sekundové signálu
 
-Implementace digitálních hodin v jazyce VHDL.
+-Implementace digitálních hodin v jazyce VHDL.
 
-Řízení 8místného 7segmentového displeje pomocí multiplexingu.
+-Řízení 8místného 7segmentového displeje pomocí multiplexingu.
 
-Uživatelské rozhraní pro nastavování času pomocí tlačítek.
+-Uživatelské rozhraní pro nastavování času pomocí tlačítek.
 
 
 
