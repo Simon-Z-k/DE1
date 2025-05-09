@@ -72,6 +72,10 @@ __sw[1,0]:__
 
 7segmentový displej je řízen multiplexně, každé číslo je zobrazeno postupně.
 
+__RTL Analysis:__
+
+![image](https://github.com/user-attachments/assets/4923ebaa-359b-483a-989d-7eebfa757fbe)
+
 ## Popis softwarového chování
 Velmi hrubý náčrt schématu:
 
